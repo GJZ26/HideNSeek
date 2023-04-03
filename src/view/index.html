@@ -24,12 +24,13 @@
             justify-content: center;
             text-align: center;
         }
-        
+
         p {
             font-size: 20px;
             margin: 12px 0 0 0;
         }
-        canvas{
+
+        canvas {
             margin: 0;
             padding: 0;
             border: none;
@@ -50,5 +51,24 @@
     </noscript>
     <canvas id="playground"></canvas>
 </body>
+<!-- <script>
+    const canvas = document.getElementById("playground");
+    const ctx = canvas.getContext("2d");
+
+    // Non-rotated rectangle
+    ctx.fillStyle = "gray";
+    ctx.fillRect(80, 60, 140, 30);
+
+    // Matrix transformation
+    ctx.translate(150, 75);
+    ctx.rotate(Math.PI / 1.2);
+    ctx.translate(-150, -75);
+
+    // Rotated rectangle
+    ctx.fillStyle = "red";
+    ctx.fillRect(80, 60, 140, 30);
+
+</script> -->
 <script type="module" src="../script/main.js"></script>
+
 </html>

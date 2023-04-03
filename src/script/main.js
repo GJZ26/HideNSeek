@@ -1,4 +1,4 @@
-import { Player } from "./character/Player.js"
+import { Player } from "./Character/Player.js"
 import { Scene } from "./Scene/Scene.js"
 import { Performance } from "./various/Performance.js"
 
@@ -13,7 +13,7 @@ if (canvas.nodeName !== "CANVAS") {
 }
 
 const scene = new Scene(canvas)
-const player1 = new Player(90, 90)
+const player1 = new Player(90, 90,10)
 const performance = new Performance();
 
 scene.config(window.innerWidth - 1, window.innerHeight - 1)
@@ -35,6 +35,10 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
     e.preventDefault()
     player1.move(e, e.type)
+})
+
+window.addEventListener('mousemove',(e)=>{
+    player1.turn(e.clientX,e.clientY)
 })
 
 function update() {
