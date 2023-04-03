@@ -1,6 +1,9 @@
+import { Bullet } from "./Bullet.js";
+
 export class Player {
     x; y; width; heigh; speed; normalized_speed; angle;
-    x_center; y_center;
+    x_center; y_center; Localcontext; bullets = {}
+    max_bullet = 3;
 
     cursorPosition = {
         x: 0,
@@ -37,7 +40,8 @@ export class Player {
         ]
     }
 
-    constructor(width, heigh, speed = 8) {
+    constructor(canvas, width, heigh, speed = 8) {
+        this.Localcontext = canvas.getContext('2d');
         this.speed = speed
 
         // this.normalized_speed = (speed/(Math.sqrt((speed*speed)+(speed*speed))))*speed
@@ -59,23 +63,31 @@ export class Player {
      * 
      * @param {CanvasRenderingContext2D} ctx 
     */
-    draw(ctx) {
+    draw() {
 
-        ctx.save()
+        for (const i in this.bullets) {
+            this.bullets[i].draw()
+            if (!this.bullets[i].alived) {
+                delete this.bullets[i]
+            }
+        }
 
-        ctx.translate(this.x_center, this.y_center)
-        ctx.rotate(this.angle)
-        ctx.translate(-(this.x_center), -(this.y_center))
+        this.Localcontext.save()
 
-        ctx.fillStyle = "#3E3E3E"
-        ctx.fillRect(this.x, this.y, this.width, this.heigh)
+        this.Localcontext.translate(this.x_center, this.y_center)
+        this.Localcontext.rotate(this.angle)
+        this.Localcontext.translate(-(this.x_center), -(this.y_center))
+
+        this.Localcontext.fillStyle = "#3E3E3E"
+        this.Localcontext.fillRect(this.x, this.y, this.width, this.heigh)
 
         // ojitos
-        ctx.fillStyle = '#F88257'
-        ctx.fillRect(this.x + 20, this.y - 10, 10, 10);
-        ctx.fillRect(this.x + this.width - 30, this.y - 10, 10, 10);
+        this.Localcontext.fillStyle = '#F88257'
+        this.Localcontext.fillRect(this.x + 20, this.y - 10, 10, 10);
+        this.Localcontext.fillRect(this.x + this.width - 30, this.y - 10, 10, 10);
 
-        ctx.restore()
+        this.Localcontext.restore()
+
     }
 
     move(key, eventType) {
@@ -96,7 +108,7 @@ export class Player {
             this.x = this.x + this.speed * Math.sin(this.angle)
         }
 
-        if(this.goingTo.DOWN){
+        if (this.goingTo.DOWN) {
 
             this.y = this.y - this.speed * Math.cos(this.angle - 1.5708 * 2)
             this.x = this.x - this.speed * Math.sin(this.angle)
@@ -105,9 +117,15 @@ export class Player {
     }
 
     turn(x, y) {
-        this.cursorPosition.x = x;
-        this.cursorPosition.y = y
         this.angle = Math.atan2(y - (this.y + this.heigh / 2), x - (this.x + this.width / 2)) + 1.5708
+    }
+
+    shoot(x, y) {
+        if (Object.keys(this.bullets).length >= this.max_bullet) {
+            return
+        }
+        this.angle = Math.atan2(y - (this.y + this.heigh / 2), x - (this.x + this.width / 2)) + 1.5708
+        this.bullets[performance.now()] = new Bullet(this.Localcontext, performance.now(), { x: this.x_center, y: this.y_center }, this.angle)
     }
 
 }

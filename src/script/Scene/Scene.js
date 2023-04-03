@@ -24,7 +24,7 @@ export class Scene {
 
     draw() {
         for (const i in this.element) {
-            this.element[i].draw(this.context)
+            this.element[i].draw()
         }
     }
 
