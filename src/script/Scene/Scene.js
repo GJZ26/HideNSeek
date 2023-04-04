@@ -1,5 +1,6 @@
 export class Scene {
     canvas;
+    id=0;
     context;
     element = {};
     fontSize=15;
@@ -19,7 +20,7 @@ export class Scene {
     }
 
     add(element) {
-        this.element[Date.now()] = element
+        this.element[this.id++] = element;
     }
 
     draw() {

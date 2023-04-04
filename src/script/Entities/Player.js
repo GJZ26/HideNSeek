@@ -1,20 +1,16 @@
 import { Bullet } from "./Bullet.js";
 
 export class Player {
-    x; y; width; heigh; speed; normalized_speed; angle=Math.PI/2;
+    x; y; width; heigh; speed; normalized_speed; angle=0;
     x_center; y_center; Localcontext; bullets = {}
     max_bullet = 3;
 
-    cursorPosition = {
-        x: 0,
-        y: 0
-    }
+    // Devs Attribute
+    bodyColor;eyeColor
 
     goingTo = {
         UP: false,
-        DOWN: false,
-        LEFT: false,
-        RIGHT: false
+        DOWN: false
     }
 
     keys = {
@@ -27,24 +23,13 @@ export class Player {
             "KeyS",
             "ArrowDown",
             "Numpad2"
-        ],
-        LEFT: [
-            "KeyA",
-            "ArrowLeft",
-            "Numpad4"
-        ],
-        RIGHT: [
-            "KeyD",
-            "ArrowRight",
-            "Numpad6"
         ]
     }
 
-    constructor(canvas, width, heigh, speed = 8) {
+    constructor(canvas, width, heigh, speed = 8,bc="black",ec="red") {
         this.Localcontext = canvas.getContext('2d');
         this.speed = speed
 
-        // this.normalized_speed = (speed/(Math.sqrt((speed*speed)+(speed*speed))))*speed
         this.normalized_speed = speed / Math.sqrt(2)
 
         this.width = width;
@@ -56,6 +41,9 @@ export class Player {
         this.x_center = this.x + this.width / 2
         this.y_center = this.y + this.heigh / 2
 
+        // Dev attributes
+        this.bodyColor = bc;
+        this.eyeColor = ec;
     }
 
 
@@ -81,13 +69,13 @@ export class Player {
         this.Localcontext.rotate(this.angle)
         this.Localcontext.translate(-(this.x_center), -(this.y_center))
         
-        this.Localcontext.fillStyle = "#3E3E3E"
+        this.Localcontext.fillStyle = this.bodyColor
         this.Localcontext.fillRect(this.x, this.y, this.width, this.heigh)
         
         // ojitos
-        this.Localcontext.fillStyle = '#F88257'
-        this.Localcontext.fillRect(this.x + 20, this.y - 10, 10, 10);
-        this.Localcontext.fillRect(this.x + this.width - 30, this.y - 10, 10, 10);
+        this.Localcontext.fillStyle = this.eyeColor
+        this.Localcontext.fillRect(this.x + 20, this.y, 10, 10);
+        this.Localcontext.fillRect(this.x + this.width - 30, this.y, 10, 10);
         
         this.Localcontext.restore()
 

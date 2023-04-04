@@ -13,10 +13,17 @@ if (canvas.nodeName !== "CANVAS") {
 }
 
 const scene = new Scene(canvas)
-const player1 = new Player(canvas, 90, 90, 10)
+
+const player1 = new Player(canvas, 90, 90, 10, "#3E3E3E",'#F88257')
+const dummy = new Player(canvas,90,90,0)
+
 const performance = new Performance();
 
+// Moving playe1
+player1.y -= player1.heigh + 30
+
 scene.config(window.innerWidth - 1, window.innerHeight - 1)
+scene.add(dummy)
 scene.add(player1)
 
 scene.draw()
@@ -35,6 +42,7 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
     e.preventDefault()
     player1.move(e, e.type)
+    console.log(player1)
 })
 
 window.addEventListener('mousemove', (e) => {
@@ -49,6 +57,7 @@ function update() {
     scene.clear()
     scene.draw()
 
+    // console.clear()
 
     // Debug Info
     scene.write("Hide N' Seek", 6)
