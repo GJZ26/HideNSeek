@@ -1,7 +1,7 @@
 import { Bullet } from "./Bullet.js";
 
 export class Player {
-    x; y; width; heigh; speed; normalized_speed; angle;
+    x; y; width; heigh; speed; normalized_speed; angle=Math.PI/2;
     x_center; y_center; Localcontext; bullets = {}
     max_bullet = 3;
 
@@ -65,6 +65,9 @@ export class Player {
     */
     draw() {
 
+        this.x_center = this.x + this.width / 2
+        this.y_center = this.y + this.heigh / 2
+
         for (const i in this.bullets) {
             this.bullets[i].draw()
             if (!this.bullets[i].alived) {
@@ -77,22 +80,20 @@ export class Player {
         this.Localcontext.translate(this.x_center, this.y_center)
         this.Localcontext.rotate(this.angle)
         this.Localcontext.translate(-(this.x_center), -(this.y_center))
-
+        
         this.Localcontext.fillStyle = "#3E3E3E"
         this.Localcontext.fillRect(this.x, this.y, this.width, this.heigh)
-
+        
         // ojitos
         this.Localcontext.fillStyle = '#F88257'
         this.Localcontext.fillRect(this.x + 20, this.y - 10, 10, 10);
         this.Localcontext.fillRect(this.x + this.width - 30, this.y - 10, 10, 10);
-
+        
         this.Localcontext.restore()
 
     }
 
     move(key, eventType) {
-        this.x_center = this.x + this.width / 2
-        this.y_center = this.y + this.heigh / 2
 
         if (this.keys.UP.includes(key.code)) {
             this.goingTo.UP = eventType === 'keydown'
@@ -104,13 +105,13 @@ export class Player {
 
         if (this.goingTo.UP) {
 
-            this.y = this.y + this.speed * Math.cos(this.angle - 1.5708 * 2)
+            this.y = this.y + this.speed * Math.cos(this.angle - 2*(90 * Math.PI/180))
             this.x = this.x + this.speed * Math.sin(this.angle)
         }
 
         if (this.goingTo.DOWN) {
 
-            this.y = this.y - this.speed * Math.cos(this.angle - 1.5708 * 2)
+            this.y = this.y - this.speed * Math.cos(this.angle - 2*(90 * Math.PI/180))
             this.x = this.x - this.speed * Math.sin(this.angle)
 
         }
