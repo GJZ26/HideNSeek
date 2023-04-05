@@ -28,8 +28,6 @@ export class Bullet {
         this.distance = Math.sqrt(Math.pow((this.initial_x - this.x), 2) + Math.pow((this.initial_y - this.y), 2))
         let opacity = this.distance > this.max_distance ? 0 : 1 - (this.distance / this.max_distance)
 
-        console.log(opacity)
-
         if (this.distance > this.max_distance) {
             this.alived = false;
         }

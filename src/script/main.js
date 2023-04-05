@@ -42,7 +42,6 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
     e.preventDefault()
     player1.move(e, e.type)
-    console.log(player1)
 })
 
 window.addEventListener('mousemove', (e) => {
