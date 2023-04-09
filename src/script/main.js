@@ -2,6 +2,8 @@ import { Player } from "./Entities/Player.js"
 import { Scene } from "./Scene/Scene.js"
 import { Performance } from "./various/Performance.js"
 
+import config from '../GameConfig.json' assert {type: 'json'}
+
 const canvas = document.getElementById("playground")
 
 if (canvas === null) {
@@ -14,8 +16,8 @@ if (canvas.nodeName !== "CANVAS") {
 
 const scene = new Scene(canvas)
 
-const player1 = new Player(canvas, 90, 90, 10, "#3E3E3E",'#F88257')
-const dummy = new Player(canvas,90,90,0)
+const player1 = new Player(canvas, 90, 90, 10, "#3E3E3E", '#F88257')
+const dummy = new Player(canvas, 90, 90, 0)
 
 const performance = new Performance();
 
@@ -59,8 +61,8 @@ function update() {
     // console.clear()
 
     // Debug Info
-    scene.write("Hide N' Seek", 6)
-    scene.write("Version: v.0.0.0-dev", 6, 35)
+    scene.write(`${config.game_name}`, 6)
+    scene.write(`Version: ${config.version}`, 6, 35)
     scene.write(`Date: ${new Date()}`, 6, 55)
     scene.write(`FPS: ${performance.showFPS()}`, 6, 75)
 

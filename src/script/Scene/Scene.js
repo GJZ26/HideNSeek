@@ -30,8 +30,16 @@ export class Scene {
     }
 
     write(text, x=0, y=this.fontSize, color = "black"){
-        this.context.fillStyle = color;
+        
+        this.context.fillStyle = "white"
+        this.context.globalAlpha = 0.3
         this.context.font = `${this.fontSize}px Arial`
+
+        this.context.fillRect(x-3,y-this.fontSize,this.context.measureText(text).width + 5,this.fontSize + 5);
+        
+
+        this.context.globalAlpha = 1
+        this.context.fillStyle = color;
         this.context.fillText(text,x,y);
     }
 
