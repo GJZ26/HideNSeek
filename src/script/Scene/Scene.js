@@ -2,7 +2,7 @@ export class Scene {
     canvas;
     id=0;
     context;
-    element = {};
+    entities = {};
     fontSize=15;
 
     /**
@@ -20,12 +20,12 @@ export class Scene {
     }
 
     add(element) {
-        this.element[this.id++] = element;
+        this.entities[this.id++] = element;
     }
 
     draw() {
-        for (const i in this.element) {
-            this.element[i].draw()
+        for (const i in this.entities) {
+            this.entities[i].draw()
         }
     }
 

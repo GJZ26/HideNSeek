@@ -81,6 +81,35 @@ export class Player {
 
     }
 
+    render(x_render,y_render){
+
+        const x_center_render = x_render + this.width / 2
+        const y_center_render = y_render + this.heigh / 2
+
+        for (const i in this.bullets) {
+            this.bullets[i].draw()
+            if (!this.bullets[i].alived) {
+                delete this.bullets[i]
+            }
+        }
+
+        this.Localcontext.save()
+
+        this.Localcontext.translate(x_center_render, y_center_render)
+        this.Localcontext.rotate(this.angle)
+        this.Localcontext.translate(-(x_center_render), -(y_center_render))
+        
+        this.Localcontext.fillStyle = this.bodyColor
+        this.Localcontext.fillRect(x_render, y_render, this.width, this.heigh)
+        
+        // ojitos
+        this.Localcontext.fillStyle = this.eyeColor
+        this.Localcontext.fillRect(x_render + 20, y_render, 10, 10);
+        this.Localcontext.fillRect(x_render + this.width - 30, y_render, 10, 10);
+        
+        this.Localcontext.restore()
+    }
+
     move(key, eventType) {
 
         if (this.keys.UP.includes(key.code)) {

@@ -3,6 +3,7 @@ import { Scene } from "./Scene/Scene.js"
 import { Performance } from "./various/Performance.js"
 
 import config from '../GameConfig.json' assert {type: 'json'}
+import { Camera } from "./Scene/Camera.js"
 
 const canvas = document.getElementById("playground")
 
@@ -16,20 +17,35 @@ if (canvas.nodeName !== "CANVAS") {
 
 const scene = new Scene(canvas)
 
-const player1 = new Player(canvas, 90, 90, 10, "#3E3E3E", '#F88257')
-const dummy = new Player(canvas, 90, 90, 0)
+const camera = new Camera(scene, {
+    x: 20, y: 20, width: 300, height: 300
+}, {
+    x: 10, y: 407, width: 300, height: 300
+})
+
+const player1 = new Player(canvas, 50, 50, 10, "#3E3E3E", '#F88257')
+const dummy = new Player(canvas, 50, 50, 0, "#F08080")
+const dummy2 = new Player(canvas, 50, 50, 0, "#40E0D0")
+const dummy3 = new Player(canvas, 50, 50, 0,"#6495ED")
 
 const performance = new Performance();
 
 // Moving playe1
 player1.y -= player1.heigh + 30
 
+dummy2.y = dummy.y + 100
+dummy2.x = dummy.x + 220
+
+dummy3.y = dummy.y = dummy.y + 10
+dummy3.x = dummy.x + 220
+
+
+
 scene.config(window.innerWidth - 1, window.innerHeight - 1)
 scene.add(dummy)
+scene.add(dummy2)
+scene.add(dummy3)
 scene.add(player1)
-
-scene.draw()
-scene.write("Hide N' Seek - v.0.0.0-dev")
 
 window.addEventListener("resize", () => {
     scene.config(window.innerWidth - 1, window.innerHeight - 1);
@@ -39,6 +55,11 @@ window.addEventListener("resize", () => {
 window.addEventListener('keydown', (e) => {
     e.preventDefault()
     player1.move(e, e.type)
+
+    dummy.turn(player1.x_center, player1.y_center)
+    dummy2.turn(player1.x_center, player1.y_center)
+    dummy3.turn(player1.x_center, player1.y_center)
+    camera.follow(player1)
 })
 
 window.addEventListener('keyup', (e) => {
@@ -57,8 +78,7 @@ window.addEventListener('click', (e) => {
 function update() {
     scene.clear()
     scene.draw()
-
-    // console.clear()
+    camera.render()
 
     // Debug Info
     scene.write(`${config.game_name}`, 6)
@@ -70,4 +90,7 @@ function update() {
     requestAnimationFrame(update)
 }
 
-requestAnimationFrame(update)
+requestAnimationFrame(() => {
+    camera.follow(player1)
+    update()
+})
