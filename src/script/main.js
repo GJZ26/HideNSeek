@@ -5,6 +5,8 @@ import { Performance } from "./various/Performance.js"
 import config from '../GameConfig.json' assert {type: 'json'}
 import { Camera } from "./Scene/Camera.js"
 
+document.title = config.tab_title
+
 const canvas = document.getElementById("playground")
 
 if (canvas === null) {
@@ -18,9 +20,9 @@ if (canvas.nodeName !== "CANVAS") {
 const scene = new Scene(canvas)
 
 const camera = new Camera(scene, {
-    x: 20, y: 20, width: 300, height: 300
+    x: 20, y: 20, max_render_distance_x:30, max_render_distance_y:30
 }, {
-    x: 10, y: 407, width: 300, height: 300
+    x: 10, y: 200, width: 300, height: 300
 })
 
 const player1 = new Player(canvas, 50, 50, 10, "#3E3E3E", '#F88257')

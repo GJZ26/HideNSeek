@@ -5,14 +5,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hide N' Seek - Test Samples</title>
+    <title>No javascript, no game... 😕</title>
     <style>
         * {
             margin: 0;
             padding: 0;
         }
 
-        noscript {
+        noscript,
+        div {
             width: 100%;
             height: 100%;
             position: absolute;
@@ -25,9 +26,13 @@
             text-align: center;
         }
 
+        h1 {
+            margin: 0px 15px 20px 15px;
+        }
+
         p {
+            margin: 0px 15px 0px 15px;
             font-size: 20px;
-            margin: 12px 0 0 0;
         }
 
         canvas {
@@ -53,5 +58,27 @@
 </body>
 
 <script type="module" src="../script/main.js"></script>
+<script defer>
+    if (window.location.protocol === "file:") {
+        document.body.innerHTML = `
+        <div>
+            <h1>
+                Hehe... This is something we knew could happen...😅
+            </h1>
+            <p>
+                This project uses the <strong>ES6 Javascript</strong> standard, which is currently subject to the same-origin policies...
+            </p>
+            <p>
+                To run this project, you need to set up a local server, you can use extensions such as <strong>LiveServer</strong> from <strong>Visual Studio Code</strong>!
+            </p>
+            <p>
+                Sorry for these inconveniences, and in the future we will implement the code with the <strong>Common JS</strong> standard so you can play it standalone! 🎮
+            </p>
+        </div>
+        `
+
+        document.title = "Ups! This is not a bug at all... 😬"
+    }
+</script>
 
 </html>

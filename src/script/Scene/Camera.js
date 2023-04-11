@@ -17,6 +17,8 @@ export class Camera {
     y_display_position;
     display_width;
     display_height;
+    max_render_distance_x;
+    max_render_distance_y;
 
     backgroung_color;
 
@@ -24,7 +26,8 @@ export class Camera {
     constructor(scene,
         camera_position = {
             x: 0, y: 0,
-            width: 100, height: 100
+            max_render_distance_x: 0,
+            max_render_distance_y: 0
         },
         display_position = {
             x: 0, y: 0,
@@ -38,15 +41,18 @@ export class Camera {
 
         this.x_camera_position = camera_position.x;
         this.y_camera_position = camera_position.y;
-        this.camera_width = camera_position.width;
-        this.camera_height = camera_position.height;
+        this.camera_width = display_position.width;
+        this.camera_height = display_position.height;
 
         this.x_display_position = display_position.x;
         this.y_display_position = display_position.y;
         this.display_width = display_position.width;
         this.display_height = display_position.height;
 
-        this.backgroung_color = display_position.background_color ? display_position.background_color : "gray";
+        this.backgroung_color = display_position.background_color ? display_position.background_color : "#D9D9D9";
+
+        this.max_render_distance_x = camera_position.max_render_distance_x ? camera_position.max_render_distance_x : 10;
+        this.max_render_distance_y = camera_position.max_render_distance_y ? camera_position.max_render_distance_y : 10;
 
     }
 
@@ -63,6 +69,24 @@ export class Camera {
 
         this.context.save()
         this.context.strokeRect(this.x_camera_position, this.y_camera_position, this.camera_width, this.camera_height);
+        this.context.strokeStyle = "red";
+
+        this.context.strokeRect(
+            this.x_camera_position - this.max_render_distance_x,
+            this.y_camera_position - this.max_render_distance_y,
+            this.camera_width + 2 * this.max_render_distance_x,
+            this.camera_height + 2 * this.max_render_distance_y
+        );
+
+        const maxRender = new Path2D();
+        maxRender.rect(
+            this.x_camera_position - this.max_render_distance_x,
+            this.y_camera_position - this.max_render_distance_y,
+            this.camera_width + 2 * this.max_render_distance_x,
+            this.camera_height + 2 * this.max_render_distance_y
+        )
+
+
 
         this.context.beginPath()
         this.context.rect(this.x_display_position, this.y_display_position, this.display_width, this.display_height)
@@ -72,6 +96,10 @@ export class Camera {
         for (const i in this.scene.entities) {
             const relative_x = this.scene.entities[i].x - this.x_camera_position + this.x_display_position
             const relative_y = this.scene.entities[i].y - this.y_camera_position + this.y_display_position
+
+            if (!this.context.isPointInPath(maxRender, this.scene.entities[i].x_center, this.scene.entities[i].y_center)) {
+                continue;
+            }
 
             this.scene.entities[i].render(relative_x, relative_y)
         }
@@ -83,8 +111,8 @@ export class Camera {
      * @param {Player} player 
      */
     follow(player) {
-        this.x_camera_position = player.x - this.camera_width/2 + player.width/2
-        this.y_camera_position = player.y- this.camera_height/2 + player.heigh/2
+        this.x_camera_position = player.x - this.camera_width / 2 + player.width / 2
+        this.y_camera_position = player.y - this.camera_height / 2 + player.heigh / 2
     }
 
 }

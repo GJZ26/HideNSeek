@@ -1,12 +1,12 @@
 import { Bullet } from "./Bullet.js";
 
 export class Player {
-    x; y; width; heigh; speed; normalized_speed; angle=0;
+    x; y; width; heigh; speed; normalized_speed; angle = 0;
     x_center; y_center; Localcontext; bullets = {}
     max_bullet = 3;
 
     // Devs Attribute
-    bodyColor;eyeColor
+    bodyColor; eyeColor
 
     goingTo = {
         UP: false,
@@ -26,7 +26,7 @@ export class Player {
         ]
     }
 
-    constructor(canvas, width, heigh, speed = 8,bc="black",ec="red") {
+    constructor(canvas, width, heigh, speed = 8, bc = "black", ec = "red") {
         this.Localcontext = canvas.getContext('2d');
         this.speed = speed
 
@@ -68,26 +68,26 @@ export class Player {
         this.Localcontext.translate(this.x_center, this.y_center)
         this.Localcontext.rotate(this.angle)
         this.Localcontext.translate(-(this.x_center), -(this.y_center))
-        
+
         this.Localcontext.fillStyle = this.bodyColor
         this.Localcontext.fillRect(this.x, this.y, this.width, this.heigh)
-        
+
         // ojitos
         this.Localcontext.fillStyle = this.eyeColor
         this.Localcontext.fillRect(this.x + 20, this.y, 10, 10);
         this.Localcontext.fillRect(this.x + this.width - 30, this.y, 10, 10);
-        
+
         this.Localcontext.restore()
 
     }
 
-    render(x_render,y_render){
+    render(x_render, y_render) {
 
         const x_center_render = x_render + this.width / 2
         const y_center_render = y_render + this.heigh / 2
 
         for (const i in this.bullets) {
-            this.bullets[i].draw()
+            this.bullets[i].render(x_render, y_render)
             if (!this.bullets[i].alived) {
                 delete this.bullets[i]
             }
@@ -98,15 +98,15 @@ export class Player {
         this.Localcontext.translate(x_center_render, y_center_render)
         this.Localcontext.rotate(this.angle)
         this.Localcontext.translate(-(x_center_render), -(y_center_render))
-        
+
         this.Localcontext.fillStyle = this.bodyColor
         this.Localcontext.fillRect(x_render, y_render, this.width, this.heigh)
-        
+
         // ojitos
         this.Localcontext.fillStyle = this.eyeColor
         this.Localcontext.fillRect(x_render + 20, y_render, 10, 10);
         this.Localcontext.fillRect(x_render + this.width - 30, y_render, 10, 10);
-        
+
         this.Localcontext.restore()
     }
 
@@ -122,13 +122,13 @@ export class Player {
 
         if (this.goingTo.UP) {
 
-            this.y = this.y + this.speed * Math.cos(this.angle - 2*(90 * Math.PI/180))
+            this.y = this.y + this.speed * Math.cos(this.angle - 2 * (90 * Math.PI / 180))
             this.x = this.x + this.speed * Math.sin(this.angle)
         }
 
         if (this.goingTo.DOWN) {
 
-            this.y = this.y - this.speed * Math.cos(this.angle - 2*(90 * Math.PI/180))
+            this.y = this.y - this.speed * Math.cos(this.angle - 2 * (90 * Math.PI / 180))
             this.x = this.x - this.speed * Math.sin(this.angle)
 
         }
