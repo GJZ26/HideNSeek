@@ -75,6 +75,9 @@ window.addEventListener('mousemove', (e) => {
 
 window.addEventListener('click', (e) => {
     player1.shoot(e.clientX, e.clientY)
+    dummy.shoot(e.clientX, e.clientY)
+    dummy2.shoot(e.clientX, e.clientY)
+    dummy3.shoot(e.clientX, e.clientY)
 })
 
 function update() {

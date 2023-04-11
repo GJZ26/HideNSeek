@@ -48,7 +48,7 @@ export class Player {
 
 
     /**
-     * 
+     * @deprecated Use the render method instead
      * @param {CanvasRenderingContext2D} ctx 
     */
     draw() {
@@ -81,20 +81,27 @@ export class Player {
 
     }
 
-    render(x_render, y_render) {
+    render(x_render, y_render, render = true) {
+        this.x_center = this.x + this.width / 2
+        this.y_center = this.y + this.heigh / 2
 
         const x_center_render = x_render + this.width / 2
         const y_center_render = y_render + this.heigh / 2
-
+        
         for (const i in this.bullets) {
-            this.bullets[i].render(x_render, y_render)
+            this.bullets[i].render(x_render - this.x, y_render - this.y)
             if (!this.bullets[i].alived) {
                 delete this.bullets[i]
             }
         }
+        
+        if (render) {
+            return;
+        }
 
         this.Localcontext.save()
 
+        console.log("Rendering body")
         this.Localcontext.translate(x_center_render, y_center_render)
         this.Localcontext.rotate(this.angle)
         this.Localcontext.translate(-(x_center_render), -(y_center_render))
@@ -108,6 +115,7 @@ export class Player {
         this.Localcontext.fillRect(x_render + this.width - 30, y_render, 10, 10);
 
         this.Localcontext.restore()
+
     }
 
     move(key, eventType) {

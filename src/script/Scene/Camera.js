@@ -87,7 +87,8 @@ export class Camera {
         )
 
 
-
+        
+        
         this.context.beginPath()
         this.context.rect(this.x_display_position, this.y_display_position, this.display_width, this.display_height)
         this.context.clip()
@@ -97,13 +98,19 @@ export class Camera {
             const relative_x = this.scene.entities[i].x - this.x_camera_position + this.x_display_position
             const relative_y = this.scene.entities[i].y - this.y_camera_position + this.y_display_position
 
-            if (!this.context.isPointInPath(maxRender, this.scene.entities[i].x_center, this.scene.entities[i].y_center)) {
-                continue;
-            }
-
-            this.scene.entities[i].render(relative_x, relative_y)
+            this.scene.entities[i].render(relative_x, relative_y, !this.context.isPointInPath(maxRender, this.scene.entities[i].x_center, this.scene.entities[i].y_center))
         }
+
+        this.context.fillStyle = "black";
+
+
+        this.context.fillText("Viewport display", this.x_display_position + 5, this.y_display_position + 15)
         this.context.restore()
+        this.context.fillStyle = "black";
+        this.context.fillText("Camera Viewport", this.x_camera_position+5, this.y_camera_position+15)
+        this.context.fillStyle = "red";
+        this.context.fillText("Maximum rendering area",this.x_camera_position-this.max_render_distance_x+5,this.y_camera_position- this.max_render_distance_y+15)
+        
     }
 
     /**
