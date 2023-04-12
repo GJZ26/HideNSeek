@@ -101,7 +101,6 @@ export class Player {
 
         this.Localcontext.save()
 
-        console.log("Rendering body")
         this.Localcontext.translate(x_center_render, y_center_render)
         this.Localcontext.rotate(this.angle)
         this.Localcontext.translate(-(x_center_render), -(y_center_render))
@@ -151,7 +150,7 @@ export class Player {
             return
         }
         this.angle = Math.atan2(y - (this.y + this.heigh / 2), x - (this.x + this.width / 2)) + 1.5708
-        this.bullets[performance.now()] = new Bullet(this.Localcontext, performance.now(), { x: this.x_center, y: this.y_center }, this.angle)
+        this.bullets[performance.now()] = new Bullet(this.Localcontext, performance.now(), { x: this.x_center, y: this.y_center }, this.angle,this.bodyColor)
     }
 
 }

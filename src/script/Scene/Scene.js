@@ -33,7 +33,7 @@ export class Scene {
         
         this.context.fillStyle = "white"
         this.context.globalAlpha = 0.3
-        this.context.font = `${this.fontSize}px Arial`
+        this.context.font = `${this.fontSize}px Trebuchet MS`
 
         this.context.fillRect(x-3,y-this.fontSize,this.context.measureText(text).width + 5,this.fontSize + 5);
         

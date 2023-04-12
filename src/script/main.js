@@ -95,7 +95,12 @@ function update() {
     requestAnimationFrame(update)
 }
 
+console.log(`%c${config.game_name}`,"font-family:Trebuchet MS ;font-size:32px; font-weight: bold;")
+console.log(`%cVersion: ${config.version}`,"font-family:Trebuchet MS;font-size:16px; font-style:italic")
+
 requestAnimationFrame(() => {
+    console.log(`%cCurious people will rule the world!\n\nMost of the console printouts are removed before a new version of the game is uploaded to the repository, so you probably won't find anything interesting here 🥲.\n\nAnyway, if you find a message here that shouldn't be here, or any other wild bug 🪲, you can open a new pull request to the repository and we'll be glad to solve it!\n`,"font-family:Trebuchet MS;font-size:16px;font-weight:100")
+    console.log(`%cGitHub Repository 📖: %c https://github.com/GJZ26/HideNSeek`,"font-family:Trebuchet MS;font-size:16px;font-weight:bold","font-family:Trebuchet MS;font-size:16px;font-weight:normal; color:#78D1FF")
     camera.follow(player1)
     update()
 })

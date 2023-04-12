@@ -3,16 +3,18 @@ export class Bullet {
     initial_x; initial_y;
     distance; max_distance
     width = 10; alived;
+    color;
 
     /**
      * 
      * @param {CanvasRenderingContext2D} context 
      * @param {*} id 
      */
-    constructor(context, id, position, angle, max_distance = 1000) {
+    constructor(context, id, position, angle,color="red", max_distance = 1000) {
         this.localContext = context
         this.x = position.x
         this.y = position.y
+
 
         this.initial_x = position.x
         this.initial_y = position.y
@@ -20,6 +22,8 @@ export class Bullet {
         this.angle = angle
         this.id = id
         this.alived = true
+
+        this.color = color;
 
         this.max_distance = max_distance
     }
@@ -39,7 +43,7 @@ export class Bullet {
         this.x = this.x + this.speed * Math.sin(this.angle)
         this.localContext.beginPath()
         this.localContext.globalAlpha = opacity
-        this.localContext.fillStyle = "#8D64D6";
+        this.localContext.fillStyle = this.color;
         this.localContext.arc(this.x, this.y, this.width, 0, 2 * Math.PI)
         this.localContext.fill()
         this.localContext.closePath()
@@ -47,7 +51,6 @@ export class Bullet {
     }
 
     render(x_render, y_render) {
-        console.log("Bullet Render")
         this.distance = Math.sqrt(Math.pow((this.initial_x - this.x), 2) + Math.pow((this.initial_y - this.y), 2))
         let opacity = this.distance > this.max_distance ? 0 : 1 - (this.distance / this.max_distance)
 
@@ -60,7 +63,7 @@ export class Bullet {
 
         this.localContext.beginPath()
         this.localContext.globalAlpha = opacity
-        this.localContext.fillStyle = "red";
+        this.localContext.fillStyle = this.color;
         this.localContext.arc(this.x + x_render, this.y + y_render, this.width, 0, 2 * Math.PI)
         this.localContext.fill()
         this.localContext.closePath()
