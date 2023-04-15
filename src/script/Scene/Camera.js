@@ -21,13 +21,16 @@ export class Camera {
     max_render_distance_y;
 
     backgroung_color;
-
+    scale;
+    x_camera_distance;
+    y_camera_distance;
 
     constructor(scene,
         camera_position = {
             x: 0, y: 0,
             max_render_distance_x: 0,
-            max_render_distance_y: 0
+            max_render_distance_y: 0,
+            scale: 1
         },
         display_position = {
             x: 0, y: 0,
@@ -54,6 +57,7 @@ export class Camera {
         this.max_render_distance_x = camera_position.max_render_distance_x ? camera_position.max_render_distance_x : 10;
         this.max_render_distance_y = camera_position.max_render_distance_y ? camera_position.max_render_distance_y : 10;
 
+        this.scale = camera_position.scale ? camera_position.scale : 1;
     }
 
     setScene(scene) {
@@ -68,37 +72,49 @@ export class Camera {
         this.context.fillStyle = this.backgroung_color;
 
         this.context.save()
-        this.context.strokeRect(this.x_camera_position, this.y_camera_position, this.camera_width, this.camera_height);
+        this.context.strokeRect(
+            this.x_camera_position,
+            this.y_camera_position,
+            this.camera_width,
+            this.camera_height);
         this.context.strokeStyle = "red";
 
         this.context.strokeRect(
-            this.x_camera_position - this.max_render_distance_x,
-            this.y_camera_position - this.max_render_distance_y,
-            this.camera_width + 2 * this.max_render_distance_x,
-            this.camera_height + 2 * this.max_render_distance_y
+            this.x_camera_position - (this.max_render_distance_x),
+            this.y_camera_position - (this.max_render_distance_y),
+            this.camera_width + (2 * (this.max_render_distance_x)),
+            this.camera_height + (2 * (this.max_render_distance_y))
         );
 
         const maxRender = new Path2D();
         maxRender.rect(
-            this.x_camera_position - this.max_render_distance_x,
-            this.y_camera_position - this.max_render_distance_y,
-            this.camera_width + 2 * this.max_render_distance_x,
-            this.camera_height + 2 * this.max_render_distance_y
+            this.x_camera_position - (this.max_render_distance_x),
+            this.y_camera_position - (this.max_render_distance_y),
+            this.camera_width + 2 * (this.max_render_distance_x),
+            this.camera_height + 2 * (this.max_render_distance_y)
         )
 
 
-        
-        
+
+
         this.context.beginPath()
         this.context.rect(this.x_display_position, this.y_display_position, this.display_width, this.display_height)
         this.context.clip()
         this.context.fillRect(this.x_display_position, this.y_display_position, this.display_width, this.display_height);
 
         for (const i in this.scene.entities) {
-            const relative_x = this.scene.entities[i].x - this.x_camera_position + this.x_display_position
-            const relative_y = this.scene.entities[i].y - this.y_camera_position + this.y_display_position
 
-            this.scene.entities[i].render(relative_x, relative_y, !this.context.isPointInPath(maxRender, this.scene.entities[i].x_center, this.scene.entities[i].y_center))
+            const relative_x =
+                (this.scene.entities[i].x * this.scale) + (this.x_camera_position - (this.x_camera_position * this.scale)) + (this.x_camera_distance - (this.x_camera_distance * this.scale)) + (this.scene.entities[i].width / 2 - ((this.scene.entities[i].width * this.scale) / 2)) -
+                (this.x_camera_position) +
+                (this.x_display_position)
+
+            const relative_y =
+                (this.scene.entities[i].y * this.scale) + (this.y_camera_position - (this.y_camera_position * this.scale)) + (this.y_camera_distance - (this.y_camera_distance * this.scale) + (this.scene.entities[i].heigh / 2 - ((this.scene.entities[i].heigh * this.scale) / 2))) -
+                (this.y_camera_position) +
+                (this.y_display_position)
+
+            this.scene.entities[i].render(relative_x, relative_y, this.scale, !this.context.isPointInPath(maxRender, this.scene.entities[i].x_center, this.scene.entities[i].y_center))
         }
 
         this.context.fillStyle = "black";
@@ -107,10 +123,10 @@ export class Camera {
         this.context.fillText("Viewport display", this.x_display_position + 5, this.y_display_position + 15)
         this.context.restore()
         this.context.fillStyle = "black";
-        this.context.fillText("Camera Viewport", this.x_camera_position+5, this.y_camera_position+15)
+        this.context.fillText(`Camera Viewport`, this.x_camera_position + 5, this.y_camera_position + 15)
         this.context.fillStyle = "red";
-        this.context.fillText("Maximum rendering area",this.x_camera_position-this.max_render_distance_x+5,this.y_camera_position- this.max_render_distance_y+15)
-        
+        this.context.fillText("Maximum rendering area", this.x_camera_position - this.max_render_distance_x + 5, this.y_camera_position - this.max_render_distance_y + 15)
+
     }
 
     /**
@@ -118,8 +134,14 @@ export class Camera {
      * @param {Player} player 
      */
     follow(player) {
-        this.x_camera_position = player.x - this.camera_width / 2 + player.width / 2
-        this.y_camera_position = player.y - this.camera_height / 2 + player.heigh / 2
+        this.x_camera_position = player.x - this.camera_width / 2 + player.width / 2;
+        this.y_camera_position = player.y - this.camera_height / 2 + player.heigh / 2;
+        this.x_camera_distance = player.x - this.x_camera_position;
+        this.y_camera_distance = player.y - this.y_camera_position;
+    }
+
+    calculateAngle(x, y) {
+        return Math.atan2(y - (this.y_display_position + this.display_height / 2), x - (this.x_display_position + this.display_width / 2)) + 1.5708
     }
 
 }

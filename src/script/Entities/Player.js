@@ -81,20 +81,27 @@ export class Player {
 
     }
 
-    render(x_render, y_render, render = true) {
+    render(x, y, scale, render = true) {
         this.x_center = this.x + this.width / 2
         this.y_center = this.y + this.heigh / 2
 
-        const x_center_render = x_render + this.width / 2
-        const y_center_render = y_render + this.heigh / 2
-        
+        const x_render = x
+        const y_render = y
+
+        const x_center_render = x_render + this.width * scale / 2;
+        const y_center_render = y_render + this.heigh * scale / 2;
+
+        const width_render = this.width * scale
+        const heigh_render = this.heigh * scale
+
+
         for (const i in this.bullets) {
-            this.bullets[i].render(x_render - this.x, y_render - this.y)
+            this.bullets[i].render(x_center_render, y_center_render, scale)
             if (!this.bullets[i].alived) {
                 delete this.bullets[i]
             }
         }
-        
+
         if (render) {
             return;
         }
@@ -106,15 +113,14 @@ export class Player {
         this.Localcontext.translate(-(x_center_render), -(y_center_render))
 
         this.Localcontext.fillStyle = this.bodyColor
-        this.Localcontext.fillRect(x_render, y_render, this.width, this.heigh)
+        this.Localcontext.fillRect(x_render, y_render, width_render, heigh_render)
 
         // ojitos
         this.Localcontext.fillStyle = this.eyeColor
-        this.Localcontext.fillRect(x_render + 20, y_render, 10, 10);
-        this.Localcontext.fillRect(x_render + this.width - 30, y_render, 10, 10);
+        this.Localcontext.fillRect(x_render + 20 * scale, y_render, 10 * scale, 10 * scale);
+        this.Localcontext.fillRect(x_render + width_render - 30 * scale, y_render, 10 * scale, 10 * scale);
 
         this.Localcontext.restore()
-
     }
 
     move(key, eventType) {
@@ -141,16 +147,19 @@ export class Player {
         }
     }
 
-    turn(x, y) {
-        this.angle = Math.atan2(y - (this.y + this.heigh / 2), x - (this.x + this.width / 2)) + 1.5708
+    turn(...args) {
+        if (args.length === 2)
+            this.angle = Math.atan2(args[1] - (this.y + this.heigh / 2), args[0] - (this.x + this.width / 2)) + 1.5708
+        else
+            this.angle = args[0]
     }
 
-    shoot(x, y) {
+    shoot(...args) {
         if (Object.keys(this.bullets).length >= this.max_bullet) {
             return
         }
-        this.angle = Math.atan2(y - (this.y + this.heigh / 2), x - (this.x + this.width / 2)) + 1.5708
-        this.bullets[performance.now()] = new Bullet(this.Localcontext, performance.now(), { x: this.x_center, y: this.y_center }, this.angle,this.bodyColor)
+        this.turn(args)
+        this.bullets[performance.now()] = new Bullet(this.Localcontext, performance.now(), { x: this.x_center, y: this.y_center }, this.angle, this.bodyColor)
     }
 
 }

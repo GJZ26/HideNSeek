@@ -8,6 +8,7 @@ export class Performance {
     }
 
     showFPS() {
+     
         this.frames++
         if ((performance.now() - this.lastRender) > 1000) {
             this.fps = (this.frames / ((performance.now() - this.lastRender) / 1000))
