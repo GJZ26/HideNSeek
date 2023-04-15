@@ -8,8 +8,8 @@ import { Camera } from "./Scene/Camera.js"
 document.title = config.tab_title
 
 const canvas = document.getElementById("playground")
-const sca = document.getElementById("scale")
-const labl = document.getElementById("label")
+// const sca = document.getElementById("scale")
+// const labl = document.getElementById("label")
 
 if (canvas === null) {
     throw new Error(`Apparently there is no object with the ID "${"playground"}".`)
@@ -22,9 +22,9 @@ if (canvas.nodeName !== "CANVAS") {
 const scene = new Scene(canvas)
 
 const camera = new Camera(scene, {
-    x: 20, y: 20, max_render_distance_x: 30, max_render_distance_y: 30, scale: 1
+    x: 0, y: 0, max_render_distance_x: 30, max_render_distance_y: 30, scale: 1
 }, {
-    x: 10, y: 200, width: 300, height: 300
+    x: 0, y: 0, width: window.innerWidth - 1, height: window.innerHeight - 1
 })
 
 const player1 = new Player(canvas, 50, 50, 10, "#3E3E3E", '#F88257')
@@ -45,7 +45,7 @@ dummy3.x = dummy.x + 220
 
 
 
-scene.config((window.innerWidth - 1) - 200, window.innerHeight - 1)
+scene.config(window.innerWidth - 1, window.innerHeight - 1)
 scene.add(dummy)
 scene.add(dummy2)
 scene.add(dummy3)
@@ -53,7 +53,7 @@ scene.add(player1)
 
 window.addEventListener("resize", () => {
     scene.config(window.innerWidth - 1, window.innerHeight - 1);
-    scene.draw()
+    camera.resizeDisplay(window.innerWidth - 1, window.innerHeight - 1);
 })
 
 window.addEventListener('keydown', (e) => {
@@ -82,14 +82,12 @@ window.addEventListener('click', (e) => {
     dummy3.shoot(camera.calculateAngle(e.clientX, e.clientY))
 })
 
-sca.addEventListener("input", (e) => {
-    labl.textContent = e.target.value
-    camera.scale = e.target.value
-})
+// sca.addEventListener("input", (e) => {
+//     labl.textContent = e.target.value
+//     camera.scale = e.target.value
+// })
 
 function update() {
-    scene.clear()
-    scene.draw()
     camera.follow(player1)
     camera.render()
 

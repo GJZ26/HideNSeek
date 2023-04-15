@@ -66,25 +66,10 @@ export class Camera {
     }
 
     render() {
-        this.context.strokeStyle = "black";
-        this.context.lineWidth = 1;
 
         this.context.fillStyle = this.backgroung_color;
 
         this.context.save()
-        this.context.strokeRect(
-            this.x_camera_position,
-            this.y_camera_position,
-            this.camera_width,
-            this.camera_height);
-        this.context.strokeStyle = "red";
-
-        this.context.strokeRect(
-            this.x_camera_position - (this.max_render_distance_x),
-            this.y_camera_position - (this.max_render_distance_y),
-            this.camera_width + (2 * (this.max_render_distance_x)),
-            this.camera_height + (2 * (this.max_render_distance_y))
-        );
 
         const maxRender = new Path2D();
         maxRender.rect(
@@ -93,9 +78,6 @@ export class Camera {
             this.camera_width + 2 * (this.max_render_distance_x),
             this.camera_height + 2 * (this.max_render_distance_y)
         )
-
-
-
 
         this.context.beginPath()
         this.context.rect(this.x_display_position, this.y_display_position, this.display_width, this.display_height)
@@ -117,16 +99,7 @@ export class Camera {
             this.scene.entities[i].render(relative_x, relative_y, this.scale, !this.context.isPointInPath(maxRender, this.scene.entities[i].x_center, this.scene.entities[i].y_center))
         }
 
-        this.context.fillStyle = "black";
-
-
-        this.context.fillText("Viewport display", this.x_display_position + 5, this.y_display_position + 15)
         this.context.restore()
-        this.context.fillStyle = "black";
-        this.context.fillText(`Camera Viewport`, this.x_camera_position + 5, this.y_camera_position + 15)
-        this.context.fillStyle = "red";
-        this.context.fillText("Maximum rendering area", this.x_camera_position - this.max_render_distance_x + 5, this.y_camera_position - this.max_render_distance_y + 15)
-
     }
 
     /**
@@ -142,6 +115,14 @@ export class Camera {
 
     calculateAngle(x, y) {
         return Math.atan2(y - (this.y_display_position + this.display_height / 2), x - (this.x_display_position + this.display_width / 2)) + 1.5708
+    }
+
+    resizeDisplay(width,heigh){
+        this.camera_height = heigh;
+        this.display_height = heigh;
+
+        this.camera_width = width;
+        this.display_width = width;
     }
 
 }
