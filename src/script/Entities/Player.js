@@ -2,11 +2,17 @@ import { Bullet } from "./Bullet.js";
 
 export class Player {
     x; y; width; heigh; speed; normalized_speed; angle = 0;
-    x_center; y_center; Localcontext; bullets = {}
+    x_center; y_center;
+    /**
+     * @type {CanvasRenderingContext2D}
+     */
+    Localcontext;
+    bullets = {}
     max_bullet = 3;
 
     // Devs Attribute
     bodyColor; eyeColor
+    role;
 
     goingTo = {
         UP: false,
@@ -26,9 +32,13 @@ export class Player {
         ]
     }
 
+    allowedEvents = [
+        ""
+    ]
+
     constructor(canvas, width, heigh, speed = 8, bc = "black", ec = "red") {
         this.Localcontext = canvas.getContext('2d');
-        this.speed = speed
+        this.speed = speed <= 0 ? 8 : speed
 
         this.normalized_speed = speed / Math.sqrt(2)
 
@@ -44,6 +54,9 @@ export class Player {
         // Dev attributes
         this.bodyColor = bc;
         this.eyeColor = ec;
+
+
+        this.role = 0
     }
 
 
@@ -102,6 +115,10 @@ export class Player {
             }
         }
 
+        if (this.goingTo.UP) {
+            this.goto()
+        }
+
         if (render) {
             return;
         }
@@ -123,27 +140,10 @@ export class Player {
         this.Localcontext.restore()
     }
 
-    move(key, eventType) {
+    move(key) {
 
-        if (this.keys.UP.includes(key.code)) {
-            this.goingTo.UP = eventType === 'keydown'
-        }
-
-        if (this.keys.DOWN.includes(key.code)) {
-            this.goingTo.DOWN = eventType === 'keydown'
-        }
-
-        if (this.goingTo.UP) {
-
-            this.y = this.y + this.speed * Math.cos(this.angle - 2 * (90 * Math.PI / 180))
-            this.x = this.x + this.speed * Math.sin(this.angle)
-        }
-
-        if (this.goingTo.DOWN) {
-
-            this.y = this.y - this.speed * Math.cos(this.angle - 2 * (90 * Math.PI / 180))
-            this.x = this.x - this.speed * Math.sin(this.angle)
-
+        if (["keydown", "keyup"].includes(key.type)) {
+            this.goingTo.UP = key.type === "keydown"
         }
     }
 
@@ -160,6 +160,26 @@ export class Player {
         }
         this.turn(args)
         this.bullets[performance.now()] = new Bullet(this.Localcontext, performance.now(), { x: this.x_center, y: this.y_center }, this.angle, this.bodyColor)
+    }
+
+    /**
+     * 
+     * @param {Number} role - Role of this player: 0 - Seeker; 1 - Hidder
+     */
+    setRole(role) {
+        this.role = role;
+    }
+
+    goto(...args) {
+
+        if (args.length === 2) {
+            if (Math.abs(args[0] - this.x) <= this.speed && Math.abs(args[1] - this.y) <= this.speed) return;
+            this.turn(args[0], args[1]);
+        }
+
+        this.y = this.y + this.speed * Math.cos(this.angle - 2 * (90 * Math.PI / 180))
+        this.x = this.x + this.speed * Math.sin(this.angle)
+
     }
 
 }
