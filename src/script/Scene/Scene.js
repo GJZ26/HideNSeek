@@ -1,9 +1,11 @@
+import { Obstacle } from "./Obstacle.js";
+
 export class Scene {
     canvas;
-    id=0;
+    id = 0;
     context;
     entities = {};
-    fontSize=15;
+    fontSize = 15;
 
     /**
      * 
@@ -20,6 +22,10 @@ export class Scene {
     }
 
     add(element) {
+        if (element.constructor.name === Obstacle.name) {
+            element.setContext(this.context);
+        }
+
         this.entities[this.id++] = element;
     }
 
@@ -29,22 +35,22 @@ export class Scene {
         }
     }
 
-    write(text, x=0, y=this.fontSize, color = "black"){
-        
+    write(text, x = 0, y = this.fontSize, color = "black") {
+
         this.context.fillStyle = "white"
         this.context.globalAlpha = 0.3
         this.context.font = `${this.fontSize}px Trebuchet MS`
 
-        this.context.fillRect(x-3,y-this.fontSize,this.context.measureText(text).width + 5,this.fontSize + 5);
-        
+        this.context.fillRect(x - 3, y - this.fontSize, this.context.measureText(text).width + 5, this.fontSize + 5);
+
 
         this.context.globalAlpha = 1
         this.context.fillStyle = color;
-        this.context.fillText(text,x,y);
+        this.context.fillText(text, x, y);
     }
 
-    clear(){
-        this.context.clearRect(0,0,this.canvas.width,this.canvas.height)
+    clear() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
     }
 
 }

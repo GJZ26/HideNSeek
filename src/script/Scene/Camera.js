@@ -1,4 +1,5 @@
 import { Player } from "../Entities/Player.js";
+import { Obstacle } from "./Obstacle.js";
 import { Scene } from "./Scene.js";
 
 export class Camera {
@@ -87,16 +88,23 @@ export class Camera {
         for (const i in this.scene.entities) {
 
             const relative_x =
-                (this.scene.entities[i].x * this.scale) + (this.x_camera_position - (this.x_camera_position * this.scale)) + (this.x_camera_distance - (this.x_camera_distance * this.scale)) + (this.scene.entities[i].width / 2 - ((this.scene.entities[i].width * this.scale) / 2)) -
+                (this.scene.entities[i].x * this.scale) +
+                (this.x_camera_position - (this.x_camera_position * this.scale)) + 
+                (this.x_camera_distance - (this.x_camera_distance * this.scale)) - 
                 (this.x_camera_position) +
                 (this.x_display_position)
 
             const relative_y =
-                (this.scene.entities[i].y * this.scale) + (this.y_camera_position - (this.y_camera_position * this.scale)) + (this.y_camera_distance - (this.y_camera_distance * this.scale) + (this.scene.entities[i].heigh / 2 - ((this.scene.entities[i].heigh * this.scale) / 2))) -
+                (this.scene.entities[i].y * this.scale) + 
+                (this.y_camera_position - (this.y_camera_position * this.scale)) + 
+                (this.y_camera_distance - (this.y_camera_distance * this.scale)) -
                 (this.y_camera_position) +
                 (this.y_display_position)
 
-            this.scene.entities[i].render(relative_x, relative_y, this.scale, !this.context.isPointInPath(maxRender, this.scene.entities[i].x_center, this.scene.entities[i].y_center))
+            this.scene.entities[i].render(relative_x, relative_y, this.scale, 
+                (!this.context.isPointInPath(maxRender, this.scene.entities[i].x_center, this.scene.entities[i].y_center)) &&
+               this.scene.entities[i].constructor.name !== Obstacle.name 
+                )
         }
 
         this.context.restore()
@@ -108,18 +116,18 @@ export class Camera {
      */
     follow(player) {
         this.x_camera_position = player.x - this.camera_width / 2 + player.width / 2;
-        this.y_camera_position = player.y - this.camera_height / 2 + player.heigh / 2;
-        this.x_camera_distance = player.x - this.x_camera_position;
-        this.y_camera_distance = player.y - this.y_camera_position;
+        this.y_camera_position = player.y - this.camera_height / 2 + player.height / 2;
+        this.x_camera_distance = player.x_center - this.x_camera_position;
+        this.y_camera_distance = player.y_center - this.y_camera_position;
     }
 
     calculateAngle(x, y) {
         return Math.atan2(y - (this.y_display_position + this.display_height / 2), x - (this.x_display_position + this.display_width / 2)) + 1.5708
     }
 
-    resizeDisplay(width,heigh){
-        this.camera_height = heigh;
-        this.display_height = heigh;
+    resizeDisplay(width,height){
+        this.camera_height = height;
+        this.display_height = height;
 
         this.camera_width = width;
         this.display_width = width;

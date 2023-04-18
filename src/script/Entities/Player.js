@@ -1,8 +1,20 @@
 import { Bullet } from "./Bullet.js";
 
 export class Player {
-    x; y; width; heigh; speed; normalized_speed; angle = 0;
-    x_center; y_center;
+    x; y; width; height; speed; normalized_speed; angle = 0;
+    x_center; y_center; running = false;
+    diagonal; blocked = false;
+
+    topLeftCorner;
+    topRightCorner;
+    bottomLeftCorner;
+    bottomRightCorner;
+
+    /**
+     * @type {Path2D}
+     */
+    collider;
+
     /**
      * @type {CanvasRenderingContext2D}
      */
@@ -36,20 +48,20 @@ export class Player {
         ""
     ]
 
-    constructor(canvas, width, heigh, speed = 8, bc = "black", ec = "red") {
+    constructor(canvas, width, height, speed = 8, bc = "black", ec = "red") {
         this.Localcontext = canvas.getContext('2d');
         this.speed = speed <= 0 ? 8 : speed
 
         this.normalized_speed = speed / Math.sqrt(2)
 
         this.width = width;
-        this.heigh = heigh;
+        this.height = height;
 
         this.x = (window.innerWidth / 2) - (this.width / 2);
-        this.y = (window.innerHeight / 2) - (this.heigh / 2);
+        this.y = (window.innerHeight / 2) - (this.height / 2);
 
         this.x_center = this.x + this.width / 2
-        this.y_center = this.y + this.heigh / 2
+        this.y_center = this.y + this.height / 2
 
         // Dev attributes
         this.bodyColor = bc;
@@ -57,6 +69,15 @@ export class Player {
 
 
         this.role = 0
+        this.collider = new Path2D()
+
+        this.diagonal = Math.sqrt(Math.pow(this.width / 2, 2) + Math.pow(this.height / 2, 2))
+        this.topLeftCorner = { x: this.x, y: this.y }
+        this.topRightCorner = { x: this.x + this.width, y: this.y }
+        this.bottomLeftCorner = { x: this.x, y: this.y + this.height }
+        this.bottomRightCorner = { x: this.x + this.width, y: this.y + this.height }
+
+        this.collider.rect(this.x, this.y, this.width, this.height);
     }
 
 
@@ -67,7 +88,7 @@ export class Player {
     draw() {
 
         this.x_center = this.x + this.width / 2
-        this.y_center = this.y + this.heigh / 2
+        this.y_center = this.y + this.height / 2
 
         for (const i in this.bullets) {
             this.bullets[i].draw()
@@ -83,7 +104,7 @@ export class Player {
         this.Localcontext.translate(-(this.x_center), -(this.y_center))
 
         this.Localcontext.fillStyle = this.bodyColor
-        this.Localcontext.fillRect(this.x, this.y, this.width, this.heigh)
+        this.Localcontext.fillRect(this.x, this.y, this.width, this.height)
 
         // ojitos
         this.Localcontext.fillStyle = this.eyeColor
@@ -96,16 +117,16 @@ export class Player {
 
     render(x, y, scale, render = true) {
         this.x_center = this.x + this.width / 2
-        this.y_center = this.y + this.heigh / 2
+        this.y_center = this.y + this.height / 2
 
         const x_render = x
         const y_render = y
 
         const x_center_render = x_render + this.width * scale / 2;
-        const y_center_render = y_render + this.heigh * scale / 2;
+        const y_center_render = y_render + this.height * scale / 2;
 
         const width_render = this.width * scale
-        const heigh_render = this.heigh * scale
+        const heigh_render = this.height * scale
 
 
         for (const i in this.bullets) {
@@ -140,16 +161,74 @@ export class Player {
         this.Localcontext.restore()
     }
 
+    updateColliderPosition() {
+        this.collider = new Path2D();
+
+        this.x_center = this.x + this.width / 2
+        this.y_center = this.y + this.height / 2
+
+        this.topRightCorner = {
+            x: (this.x_center) + this.diagonal * Math.cos(this.angle - (45 * Math.PI / 180)),
+            y: (this.y_center) + this.diagonal * Math.sin(this.angle - (45 * Math.PI / 180))
+        }
+
+        this.topLeftCorner = {
+            x: (this.x_center) + this.diagonal * Math.cos(this.angle - (135 * Math.PI / 180)),
+            y: (this.y_center) + this.diagonal * Math.sin(this.angle - (135 * Math.PI / 180))
+        }
+
+        this.bottomLeftCorner = {
+            x: (this.x_center) + this.diagonal * Math.cos(this.angle - (225 * Math.PI / 180)),
+            y: (this.y_center) + this.diagonal * Math.sin(this.angle - (225 * Math.PI / 180))
+        }
+
+        this.bottomRightCorner = {
+            x: (this.x_center) + this.diagonal * Math.cos(this.angle - (315 * Math.PI / 180)),
+            y: (this.y_center) + this.diagonal * Math.sin(this.angle - (315 * Math.PI / 180))
+        }
+
+
+        this.collider.moveTo(
+            this.topRightCorner.x,
+            this.topRightCorner.y,
+        )
+
+        this.collider.lineTo(
+            this.topLeftCorner.x,
+            this.topLeftCorner.y,
+        )
+
+        this.collider.lineTo(
+            this.bottomLeftCorner.x,
+            this.bottomLeftCorner.y,
+        )
+
+        this.collider.lineTo(
+            this.bottomRightCorner.x,
+            this.bottomRightCorner.y,
+        )
+
+
+        this.collider.closePath();
+    }
+
     move(key) {
 
-        if (["keydown", "keyup"].includes(key.type)) {
-            this.goingTo.UP = key.type === "keydown"
+        this.running = key.shiftKey
+
+        if (key.type === "keydown" && this.keys.UP.includes(key.code)) {
+            this.goingTo.UP = true
         }
+
+        if (key.type === "keyup" && this.keys.UP.includes(key.code)) {
+            this.goingTo.UP = false
+        }
+
     }
 
     turn(...args) {
         if (args.length === 2)
-            this.angle = Math.atan2(args[1] - (this.y + this.heigh / 2), args[0] - (this.x + this.width / 2)) + 1.5708
+            this.angle = Math.atan2(args[1] - (this.y + this.height / 2), args[0] - (this.x + this.width / 2)) + 1.5708
         else
             this.angle = args[0]
     }
@@ -171,14 +250,17 @@ export class Player {
     }
 
     goto(...args) {
+        if(this.blocked) return;
+
 
         if (args.length === 2) {
             if (Math.abs(args[0] - this.x) <= this.speed && Math.abs(args[1] - this.y) <= this.speed) return;
             this.turn(args[0], args[1]);
         }
 
-        this.y = this.y + this.speed * Math.cos(this.angle - 2 * (90 * Math.PI / 180))
-        this.x = this.x + this.speed * Math.sin(this.angle)
+        this.y = this.y + (this.running ? this.speed + 3 : this.speed) * Math.cos(this.angle - 2 * (90 * Math.PI / 180))
+        this.x = this.x + (this.running ? this.speed + 3 : this.speed) * Math.sin(this.angle)
+
 
     }
 
